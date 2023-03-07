@@ -1,4 +1,4 @@
-name: Node.js CI
+name: Docker CI
 
 on:
   push:
@@ -36,7 +36,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./Dockerfile
+          file: Dockerfile
           push: true
           tags: jackghl/snp-service:front
 
