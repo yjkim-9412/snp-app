@@ -21,9 +21,9 @@ jobs:
         uses: docker/setup-buildx-action@v2
     
       - name: Generate nginx.conf
-        run: echo "${{ secrets.NGINX_CONF }}" > /nginx/nginx.conf
+        run: echo "${{ secrets.NGINX_CONF }}" > ./nginx.conf
       - name: Generate default.conf
-        run: echo "${{ secrets.NGINX_DEFAULT_CONF }}" > /nginx/default.conf
+        run: echo "${{ secrets.NGINX_DEFAULT_CONF }}" > ./default.conf
       
       - name: Login to Docker Hub
         uses: docker/login-action@v2
@@ -35,6 +35,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
+          context: .
           push: true
           tags: jackghl/snp-service:front
 
