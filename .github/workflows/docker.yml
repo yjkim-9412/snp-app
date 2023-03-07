@@ -8,6 +8,8 @@ env:
   AWS_REGION: ap-northeast-2
   EB_ENVIRONMENT_NAME: Snpservice-env-1
   EB_APPLICATION_NAME: snp-service
+  NGINX_CONF: "${{ secrets.NGINX_CONF }}"
+  NGINX_CONF_DEFAULT: "${{ secrets.NGINX_DEFAULT_CONF }}"
 
 jobs:
   build:
@@ -18,8 +20,8 @@ jobs:
       
       - name: Generate nginx.conf
         run: | 
-         echo "${{ secrets.NGINX_CONF }}" > nginx.conf
-         echo "${{ secrets.NGINX_DEFAULT_CONF }}" > default.conf
+         echo "${{ env.NGINX_CONF }}" > nginx.conf
+         echo "${{ env.NGINX_CONF_DEFAULT }}" > default.conf
       
       - name: Docker build
         run: |
