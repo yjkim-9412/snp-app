@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v3
       
       - name: Generate nginx.conf
-        run: echo "${{ secrets.NGINX_CONF }}" >nginx.conf
+        run: echo "${{ secrets.NGINX_CONF }}" > nginx.conf
       - name: Generate default.conf
         run: echo "${{ secrets.NGINX_DEFAULT_CONF }}" > default.conf
       
@@ -43,13 +43,4 @@ jobs:
           version_label: "react-front-v${{ github.run_number }}"
           region: ${{ env.AWS_REGION }}
           deployment_package: docker-compose.yml
-    
-      #remove yml
-      - name: Remove application.yml
-        run: rm docker-compose.yml
-      #remove conf
-      - name: Remove nginx.conf
-        run: rm nginx.conf
-      - name: Remove default.conf
-        run: rm default.conf
     
