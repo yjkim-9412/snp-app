@@ -47,7 +47,7 @@ jobs:
         run: rm docker-compose.yml
       #remove conf
       - name: Remove nginx.conf
-        run: rm /nginx/nginx.conf
+        run: rm ./nginx.conf
       - name: Remove default.conf
-        run: rm /nginx/default.conf
+        run: rm ./default.conf
     
