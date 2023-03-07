@@ -15,8 +15,8 @@ FROM nginx:latest
 
 # 리액트 빌드파일 복사
 COPY --from=build /app/build /usr/share/nginx/build
-COPY ./nginx.conf /etc/nginx/nginx.conf
-COPY ./default.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
