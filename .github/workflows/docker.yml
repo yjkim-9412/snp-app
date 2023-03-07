@@ -10,34 +10,22 @@ env:
   EB_APPLICATION_NAME: snp-service
 
 jobs:
-  docker:
+  build:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-     
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-    
+      - uses: actions/checkout@v3
       - name: Generate nginx.conf
         run: echo "${{ secrets.NGINX_CONF }}" > ./nginx.conf
       - name: Generate default.conf
         run: echo "${{ secrets.NGINX_DEFAULT_CONF }}" > ./default.conf
-      
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      
-      #DOCKER BUILD AND PUSH
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: jackghl/snp-service:front
+      - name: Docker build
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t snp-app .
+          docker tag snp-app jackghl/snp-service:front
+          docker push jackghl/snp-service:front
+       
 
       - name: Generate docker-compose.yml
         run: echo "${{ secrets.DOCKER_COMPOSE }}" > docker-compose.yml
