@@ -12,6 +12,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    name: Build
     steps:
       - uses: actions/checkout@v3
       
@@ -32,6 +33,8 @@ jobs:
   
   deploy:
      runs-on: ubuntu-latest
+     name: Deploy(Production)
+     needs: build
      steps:
       - uses: actions/checkout@v3
         # Beanstalk
