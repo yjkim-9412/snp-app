@@ -10,45 +10,56 @@ env:
   EB_APPLICATION_NAME: snp-service
 
 jobs:
-  build:
-
+  docker:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Generate nginx.conf
-      run: echo "${{ secrets.NGINX_CONF }}" > ./nginx.conf
-    - name: Generate default.conf
-      run: echo "${{ secrets.NGINX_DEFAULT_CONF }}" > ./default.conf
+      - name: Generate nginx.conf
+        run: echo "${{ secrets.NGINX_CONF }}" > ./nginx.conf
+      - name: Generate default.conf
+        run: echo "${{ secrets.NGINX_DEFAULT_CONF }}" > ./default.conf
       
-      #Docker build
-    - name: Docker build
-      run: |
-       docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-       docker build -t snp-app .
-       docker tag snp-app jackghl/snp-service:front
-       docker push jackghl/snp-service:front
-   
-    - name: Generate docker-compose.yml
-      run: echo "${{ secrets.DOCKER_COMPOSE }}" > docker-compose.yml
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+     
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: jackghl/snp-service:front
+
+      - name: Generate docker-compose.yml
+        run: echo "${{ secrets.DOCKER_COMPOSE }}" > docker-compose.yml
       
      # Beanstalk
-    - name: Beanstalk Deploy
-      uses: einaregilsson/beanstalk-deploy@v21
-      with:
-        aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
-        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESSKEY }}
-        application_name: ${{ env.EB_APPLICATION_NAME }}
-        environment_name: ${{ env.EB_ENVIRONMENT_NAME }}
-        version_label: "react-front-v${{ github.run_number }}"
-        region: ${{ env.AWS_REGION }}
-        deployment_package: docker-compose.yml
+      - name: Beanstalk Deploy
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESSKEY }}
+          application_name: ${{ env.EB_APPLICATION_NAME }}
+          environment_name: ${{ env.EB_ENVIRONMENT_NAME }}
+          version_label: "react-front-v${{ github.run_number }}"
+          region: ${{ env.AWS_REGION }}
+          deployment_package: docker-compose.yml
     
-    #remove yml
-    - name: Remove application.yml
-      run: rm docker-compose.yml
-    #remove conf
-    - name: Remove nginx.conf
-      run: rm ./nginx.conf
-    - name: Remove default.conf
-      run: rm ./default.conf
+      #remove yml
+      - name: Remove application.yml
+        run: rm docker-compose.yml
+      #remove conf
+      - name: Remove nginx.conf
+        run: rm ./nginx.conf
+      - name: Remove default.conf
+        run: rm ./default.conf
     
