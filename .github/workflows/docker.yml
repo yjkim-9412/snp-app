@@ -12,7 +12,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
     steps:
       - uses: actions/checkout@v3
       
@@ -28,11 +27,14 @@ jobs:
           docker tag snp-app jackghl/snp-service:front
           docker push jackghl/snp-service:front
        
-
       - name: Generate docker-compose.yml
         run: echo "${{ secrets.DOCKER_COMPOSE }}" > docker-compose.yml
-      
-     # Beanstalk
+  
+  deploy:
+     runs-on: ubuntu-latest
+     steps:
+      - uses: actions/checkout@v3
+        # Beanstalk
       - name: Beanstalk Deploy
         uses: einaregilsson/beanstalk-deploy@v21
         with:
@@ -43,4 +45,3 @@ jobs:
           version_label: "react-front-v${{ github.run_number }}"
           region: ${{ env.AWS_REGION }}
           deployment_package: docker-compose.yml
-    
