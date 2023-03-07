@@ -16,9 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Generate nginx.conf
-        run: echo "${{ secrets.NGINX_CONF }}" > ./nginx.conf
+        run: echo "${{ secrets.NGINX_CONF }}" > ./nginx/nginx.conf
       - name: Generate default.conf
-        run: echo "${{ secrets.NGINX_DEFAULT_CONF }}" > ./default.conf
+        run: echo "${{ secrets.NGINX_DEFAULT_CONF }}" > ./nginx/default.conf
       - name: Docker build
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
@@ -47,7 +47,7 @@ jobs:
         run: rm docker-compose.yml
       #remove conf
       - name: Remove nginx.conf
-        run: rm ./nginx.conf
+        run: rm ./nginx/nginx.conf
       - name: Remove default.conf
-        run: rm ./default.conf
+        run: rm ./nginx/default.conf
     
