@@ -35,11 +35,13 @@ jobs:
      name: Deploy(Production)
      needs: build
      steps:
+      - uses: actions/checkout@v3
+        
+      
       - name: Generate docker-compose.yml
         run: echo "${{ secrets.DOCKER_COMPOSE }}" > docker-compose.yml
       
-      - uses: actions/checkout@v3
-        # Beanstalk
+      # Beanstalk
       - name: Beanstalk Deploy
         uses: einaregilsson/beanstalk-deploy@v21
         with:
